@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{qur_name}}</h1>
+<h3 class="font-italic">{{qur_content}}</h3>
+
+<h4>Коментарии</h4>
+{% for item in coms%}
+<div>
+    <div class="font-italic">
+        Автор - {{item.user.name}}, Дата написания - {{item.created_date}}
+    </div>
+    <div class="col-md6 border rounded">
+        <div class="font-weight-bold">
+            {{item.content}}
+        </div>
+        {% if current_user.is_authenticated and current_user == item.user %}
+        <div>
+            <a href="/comments_change/{{ item.id }}" class="btn btn-warning">
+                Изменить
+            </a>
+            <a href="/comments_delete/{{ item.id }}" class="btn btn-danger">
+                Удалить
+            </a>
+
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endfor %}
+{% if current_user.is_authenticated %}
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.content.label }}<br>
+        {{ form.content(class="form-control") }}<br>
+        {% for error in form.content.errors %}
+    <p content="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    {{message}}
+</form>
+{% endif %}
+{% endblock %}
